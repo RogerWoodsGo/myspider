@@ -2,7 +2,6 @@
 import scrapy
 import os
 import codecs
-import sys
 import urlparse
 from scrapy.http.request import Request
 from pybloom import BloomFilter
@@ -52,11 +51,10 @@ class ExpampleSpider(scrapy.Spider):
             for suffix in self.allowed_suffix:
                 if net_location.endswith(suffix):
                     targeted = 1
-                    print url.split(':')[1][2:]
-                    sys.stdout.flush()
+                    #print url.split(':')[1][2:]
+                    #sys.stdout.flush()
                     #print response.body
                     if(url.split(':')[1][2:] != ""):
-                        #pass
                         self.write_str_to_file(url.split(':')[1][2:], response.body.decode('utf-8'), 'wb')
                     break
         if(targeted != 1):
