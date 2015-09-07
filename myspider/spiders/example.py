@@ -2,6 +2,7 @@
 import scrapy
 import os
 import codecs
+import sys
 import urlparse
 from scrapy.http.request import Request
 from pybloom import BloomFilter
@@ -52,8 +53,10 @@ class ExpampleSpider(scrapy.Spider):
                 if net_location.endswith(suffix):
                     targeted = 1
                     print url.split(':')[1][2:]
+                    sys.stdout.flush()
                     #print response.body
                     if(url.split(':')[1][2:] != ""):
+                        #pass
                         self.write_str_to_file(url.split(':')[1][2:], response.body.decode('utf-8'), 'wb')
                     break
         if(targeted != 1):
@@ -61,8 +64,6 @@ class ExpampleSpider(scrapy.Spider):
         return url
 
     def write_list_to_file(self, fn, list_content, mod):
-        if not os.path.exists(os.path.dirname(fn)):
-            os.makedirs(os.path.dirname(fn))
         try:
             with codecs.open(fn, mod, encoding='utf-8') as wcf:
                 for tt in list_content:
@@ -71,8 +72,11 @@ class ExpampleSpider(scrapy.Spider):
         except:
             print "open file error"
     def write_str_to_file(self, fn, string, mod):
-        if os.path.basename(fn) == '':
-            fn = fn + "index.html"
+        if os.path.basename(fn) == '' or '/' not in fn:
+            fn = "webpage/" + fn
+            fn = fn + "/index.html"
+        else:
+            fn = "webpage/" + fn
         if not os.path.exists(os.path.dirname(fn)) and os.path.dirname(fn) != '':
             os.makedirs(os.path.dirname(fn))
         #try:
