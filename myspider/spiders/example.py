@@ -11,12 +11,20 @@ class ExpampleSpider(scrapy.Spider):
     name = "example"
     url_bloom = BloomFilter(capacity = 100000,error_rate = 0.001)
     count = 0
-    allowed_domains = ["www.online.sh.cn"]
-    allowed_suffix = ["online.sh.cn"]
+    allowed_domains = ["news.xhby.net"]
+    allowed_suffix = ["xhby.net"]
     start_urls = (
-        'http://www.online.sh.cn/',
+        'http://news.xhby.net/',
         #'http://eat.online.sh.cn/eat/gb/content/2015-09/02/content_7529978.htm',
     )
+
+    def force_decode(self, string):
+	codecs=['utf-8', 'GBK', 'gb2312', 'ascii','gb18030']
+	for i in codecs:
+	    try:
+		return string.decode(i)
+	    except Exception:
+		pass
 
     def parse(self, response):
         self.count= self.count + 1
@@ -25,7 +33,7 @@ class ExpampleSpider(scrapy.Spider):
         page_list = []
 #        href_content = []
         if(response.url.split(':')[1][2:] != ""):
-            self.write_str_to_file(response.url.split(':')[1][2:], response.body.decode('utf-8'), 'wb')
+            self.write_str_to_file(response.url.split(':')[1][2:], self.force_decode(response.body), 'wb')
         for sel in hsel:
             link = sel.xpath('@href').extract()
             if len(link) != 0:
