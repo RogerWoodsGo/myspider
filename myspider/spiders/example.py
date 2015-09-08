@@ -24,6 +24,8 @@ class ExpampleSpider(scrapy.Spider):
         hsel = response.xpath('//body/*//a')
         page_list = []
 #        href_content = []
+        if(response.url.split(':')[1][2:] != ""):
+            self.write_str_to_file(response.url.split(':')[1][2:], response.body.decode('utf-8'), 'wb')
         for sel in hsel:
             link = sel.xpath('@href').extract()
             if len(link) != 0:
@@ -54,8 +56,6 @@ class ExpampleSpider(scrapy.Spider):
                     #print url.split(':')[1][2:]
                     #sys.stdout.flush()
                     #print response.body
-                    if(url.split(':')[1][2:] != ""):
-                        self.write_str_to_file(url.split(':')[1][2:], response.body.decode('utf-8'), 'wb')
                     break
         if(targeted != 1):
             url = ""
